@@ -10,6 +10,7 @@ import sys
 
 import asyncio
 import psutil
+import random
 import dbus
 
 from dbus_next.aio import MessageBus
@@ -98,7 +99,7 @@ class FWUPDInterface(ServiceInterface):
 
         if bootloader:
             arr_bootloader = {
-                'DeviceId': Variant('s', '1'),
+                'DeviceId': Variant('s', self.generate_random_hex_string()),
                 'Name': Variant('s', bootloader),
                 'Vendor': Variant('s', f'{vendor.capitalize()} Bootloader' if vendor != '' else ''),
                 'Version': Variant('s', '1'),
@@ -130,7 +131,7 @@ class FWUPDInterface(ServiceInterface):
 
         if ofono and modem_rev != '':
             arr_modem = {
-                'DeviceId': Variant('s', '1'),
+                'DeviceId': Variant('s', self.generate_random_hex_string()),
                 'Name': Variant('s', modem_rev),
                 'Vendor': Variant('s', f'{vendor.capitalize()} Modem' if vendor != '' else ''),
                 'Version': Variant('s', modem_ver if modem_ver != '' else '1'),
@@ -163,7 +164,7 @@ class FWUPDInterface(ServiceInterface):
                     # print(f"Sensor: {sensor_name}\nVendor: {sensor_vendor}\nVersion: {sensor_ver}\n")
 
                     arr_sensor = {
-                        'DeviceId': Variant('s', '1'),
+                        'DeviceId': Variant('s', self.generate_random_hex_string()),
                         'Name': Variant('s', sensor_name),
                         'Vendor': Variant('s', sensor_vendor if sensor_vendor != '' else ''),
                         'Version': Variant('s', sensor_ver if sensor_ver != '' else '1'),
@@ -180,7 +181,7 @@ class FWUPDInterface(ServiceInterface):
             for device in pci_dev:
                 # print(f"Vendor: {device['vendor_name']}, Device: {device['device_name']}")
                 pci_array = {
-                    'DeviceId': Variant('s', '1'),
+                    'DeviceId': Variant('s', self.generate_random_hex_string()),
                     'Name': Variant('s', device['device_name']),
                     'Vendor': Variant('s', device['vendor_name'] if device['vendor_name'] != '' else ''),
                     'VendorId': Variant('s', device['vendor_id'] if device['vendor_id'] != '' else ''),
@@ -198,7 +199,7 @@ class FWUPDInterface(ServiceInterface):
             for device in usb_dev:
                 # print(f"Vendor: {device['vendor_name']}, Device: {device['device_name']}")
                 usb_array = {
-                    'DeviceId': Variant('s', '1'),
+                    'DeviceId': Variant('s', self.generate_random_hex_string()),
                     'Name': Variant('s', device['device_name']),
                     'Vendor': Variant('s', device['vendor_name'] if device['vendor_name'] != '' else ''),
                     'VendorId': Variant('s', device['vendor_id'] if device['vendor_id'] != '' else ''),
@@ -216,7 +217,7 @@ class FWUPDInterface(ServiceInterface):
             for device in scsi_dev:
                 # print(f"Vendor: {device['vendor_name']}, Device: {device['device_name']}")
                 scsi_array = {
-                    'DeviceId': Variant('s', '1'),
+                    'DeviceId': Variant('s', self.generate_random_hex_string()),
                     'Name': Variant('s', device['device']),
                     'Vendor': Variant('s', device['vendor']),
                     'Version': Variant('s', device['version']),
@@ -233,7 +234,7 @@ class FWUPDInterface(ServiceInterface):
             parsed_info = self.parse_hw_info(hw_info_data)
             for section, device in parsed_info.items():
                 hw_info_array = {
-                    'DeviceId': Variant('s', '1'),
+                    'DeviceId': Variant('s', self.generate_random_hex_string()),
                     'Name': Variant('s', f"{section} {device['chip']}" if device['chip'] != '' else section),
                     'Vendor': Variant('s', device['vendor'] if device['vendor'] != '' else ''),
                     'Version': Variant('s', device['id'] if device['id'] != '' else ''),
@@ -274,6 +275,10 @@ class FWUPDInterface(ServiceInterface):
 
         dt_compat = self.extract_dt_compat()
         self.props['Metadata'].value['HostFamily'] = dt_compat
+
+    def generate_random_hex_string(self, length=40):
+        hex_digits = '0123456789abcdef'
+        return ''.join(random.choice(hex_digits) for _ in range(length))
 
     @dbus_property(access=PropertyAccess.READ)
     async def DaemonVersion(self) -> 's':
