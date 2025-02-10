@@ -24,7 +24,7 @@ class FWUPDInterface(ServiceInterface):
         self.loop = loop
         self.bus = bus
         self.props = {
-            'DaemonVersion': Variant('s', '2.0.3'),
+            'DaemonVersion': Variant('s', '2.0.5'),
             'HostBkc': Variant('s', ''),
             'HostVendor': Variant('s', ''),
             'HostProduct': Variant('s', ''),
@@ -40,7 +40,7 @@ class FWUPDInterface(ServiceInterface):
             'Devices': Variant('aa{sv}', []),
             'Plugins': Variant('aa{sv}', [{'Name': Variant('s', 'hybris')}]),
             'Metadata': Variant('a{ss}', {
-                    'CompileVersion(org.freedesktop.fwupd)': '2.0.3',
+                    'CompileVersion(org.freedesktop.fwupd)': '2.0.5',
                     'DistroId': '',
                     'KernelCmdline': '',
                     'CompileVersion(com.hughsie.libxmlb)': '0.3.14',
@@ -61,7 +61,7 @@ class FWUPDInterface(ServiceInterface):
                     'HostFamily': '',
                     'CpuArchitecture': '',
                     'RuntimeVersion(org.kernel)': '',
-                    'RuntimeVersion(org.freedesktop.fwupd)': '2.0.3'
+                    'RuntimeVersion(org.freedesktop.fwupd)': '2.0.5'
                 }
             )
         }
